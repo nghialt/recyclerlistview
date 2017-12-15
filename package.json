@@ -23,6 +23,7 @@
   "dependencies": {
     "lodash-es": "4.17.4",
     "prop-types": "15.5.8",
+    "react-native-nested-scroll-view": "git+https://github.com/nghialt/react-native-nested-scroll-view.git#88efbd29",
     "ts-object-utils": "0.0.5"
   },
   "peerDependencies": {

@@ -5,20 +5,25 @@ import {
     NativeSyntheticEvent,
     ScrollView,
     View,
+    Platform,
 } from "react-native";
 import BaseScrollComponent, { ScrollComponentProps } from "../../../core/scrollcomponent/BaseScrollComponent";
 import TSCast from "../../../utils/TSCast";
+import { default as AndroidNestedScrollView } from "react-native-nested-scroll-view";
 /***
  * The responsibility of a scroll component is to report its size, scroll events and provide a way to scroll to a given offset.
  * RecyclerListView works on top of this interface and doesn't care about the implementation. To support web we only had to provide
  * another component written on top of web elements
  */
 
+const CustomScrollView = Platform.OS === "android" ?
+    AndroidNestedScrollView : ScrollView;
+
 export default class ScrollComponent extends BaseScrollComponent {
     public static defaultProps = {
         contentHeight: 0,
         contentWidth: 0,
-        externalScrollView: TSCast.cast(ScrollView), //TSI
+        externalScrollView: TSCast.cast(CustomScrollView), //TSI
         isHorizontal: false,
         scrollThrottle: 16,
     };
@@ -27,7 +32,7 @@ export default class ScrollComponent extends BaseScrollComponent {
     private _width: number;
     private _isSizeChangedCalledOnce: boolean;
     private _dummyOnLayout: (event: LayoutChangeEvent) => void;
-    private _scrollViewRef: ScrollView | null;
+    private _scrollViewRef: CustomScrollView | null;
 
     constructor(args: ScrollComponentProps) {
         super(args);
@@ -47,9 +52,9 @@ export default class ScrollComponent extends BaseScrollComponent {
     }
 
     public render(): JSX.Element {
-        const Scroller = TSCast.cast<ScrollView>(this.props.externalScrollView); //TSI
+        const Scroller = TSCast.cast<CustomScrollView>(this.props.externalScrollView); //TSI
         return (
-            <Scroller ref={(scrollView: any) => this._scrollViewRef = scrollView as (ScrollView | null)}
+            <Scroller ref={(scrollView: any) => this._scrollViewRef = scrollView as (CustomScrollView | null)}
                       removeClippedSubviews={false}
                       scrollEventThrottle={this.props.scrollThrottle}
                       {...this.props}
