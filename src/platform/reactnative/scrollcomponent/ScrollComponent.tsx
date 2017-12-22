@@ -9,17 +9,15 @@ import {
 } from "react-native";
 import BaseScrollComponent, { ScrollComponentProps } from "../../../core/scrollcomponent/BaseScrollComponent";
 import TSCast from "../../../utils/TSCast";
-import { default as AndroidNestedScrollView } from "react-native-nested-scroll-view";
+import { CustomScrollView } from "react-native-nested-scroll-view_nghialt";
 /***
  * The responsibility of a scroll component is to report its size, scroll events and provide a way to scroll to a given offset.
  * RecyclerListView works on top of this interface and doesn't care about the implementation. To support web we only had to provide
  * another component written on top of web elements
  */
 
-const CustomScrollView = Platform.OS === "android" ?
-    AndroidNestedScrollView : ScrollView;
-
 export default class ScrollComponent extends BaseScrollComponent {
+
     public static defaultProps = {
         contentHeight: 0,
         contentWidth: 0,
@@ -47,6 +45,7 @@ export default class ScrollComponent extends BaseScrollComponent {
 
     public scrollTo(x: number, y: number, isAnimated: boolean): void {
         if (this._scrollViewRef) {
+            // @ts-ignore
             this._scrollViewRef.scrollTo({x, y, animated: isAnimated});
         }
     }
@@ -54,6 +53,7 @@ export default class ScrollComponent extends BaseScrollComponent {
     public render(): JSX.Element {
         const Scroller = TSCast.cast<CustomScrollView>(this.props.externalScrollView); //TSI
         return (
+            // @ts-ignore
             <Scroller ref={(scrollView: any) => this._scrollViewRef = scrollView as (CustomScrollView | null)}
                       removeClippedSubviews={false}
                       scrollEventThrottle={this.props.scrollThrottle}
